@@ -13,10 +13,15 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: 2. 安装编译器与系统依赖
+      - name: 2. 安装系统依赖与谷歌原配 AOSP Clang 12 编译器
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential ccache curl flex git gnupg gperf liblz4-tool libncurses5-dev libssl-dev libxml2 libxml2-utils lzop rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 clang lld llvm
+          sudo apt-get install -y bc bison build-essential ccache curl flex git gnupg gperf liblz4-tool libncurses5-dev libssl-dev libxml2 libxml2-utils lzop rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 wget tar
+          mkdir -p clang
+          AOSP_HOST="://googlesource.com"
+          AOSP_PATH="platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android12-release/clang-r416183b.tar.gz"
+          wget -q "https://${AOSP_HOST}/${AOSP_PATH}" -O clang.tar.gz
+          tar -xzf clang.tar.gz -C clang
 
       - name: 3. 引入 KernelSU Next 驱动 (4.14 兼容版)
         run: |
@@ -35,10 +40,11 @@ jobs:
           echo "CONFIG_KPROBE_EVENTS=y" >> $DEFCONFIG
           echo "CONFIG_KSU_KPROBE_HOOKS=y" >> $DEFCONFIG
 
-      - name: 5. 开始正式编译内核
+      - name: 5. 使用谷歌原配 Clang 12 正式编译内核
         run: |
+          export PATH="$PWD/clang/bin:$PATH"
           make -j$(nproc) O=out ARCH=arm64 vendor/sm8150-perf_defconfig
-          make -j$(nproc) O=out ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1 KCFLAGS="-Wno-error" CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+          make -j$(nproc) O=out ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
       - name: 6. 打包成刷机包 (AnyKernel3)
         run: |
