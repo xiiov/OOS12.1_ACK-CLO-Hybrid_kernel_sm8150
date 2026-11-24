@@ -13,15 +13,13 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: 2. 安装系统依赖与谷歌原配 AOSP Clang 12 编译器
+      - name: 2. 安装系统依赖与 AOSP Clang 12 编译器
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential ccache curl flex git gnupg gperf liblz4-tool libncurses5-dev libssl-dev libxml2 libxml2-utils lzop rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 wget tar
-          mkdir -p clang
-          AOSP_HOST="://googlesource.com"
-          AOSP_PATH="platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android12-release/clang-r416183b.tar.gz"
-          wget -q "https://${AOSP_HOST}/${AOSP_PATH}" -O clang.tar.gz
-          tar -xzf clang.tar.gz -C clang
+          sudo apt-get install -y bc bison build-essential ccache curl flex git gnupg gperf liblz4-tool libncurses5-dev libssl-dev libxml2 libxml2-utils lzop rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3
+          HOST="github.com"
+          CLANG_REPO="ThankYouMario/android_prebuilts_clang-standalone.git"
+          git clone --depth=1 -b 12 "https://${HOST}/${CLANG_REPO}" clang
 
       - name: 3. 引入 SukiSU-Ultra 驱动
         run: |
