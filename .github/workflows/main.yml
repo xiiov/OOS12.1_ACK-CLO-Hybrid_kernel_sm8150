@@ -9,18 +9,20 @@ jobs:
 
     steps:
       - name: 1. 下载你的内核源码
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
-          depth: 1
+          fetch-depth: 1
 
       - name: 2. 安装编译所需的系统依赖
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3
+          sudo apt-get install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 wget tar zstd
 
-      - name: 3. 下载编译器 (Proton Clang)
+      - name: 3. 下载编译器 (ZyC Clang 16 稳定版)
         run: |
-          git clone --depth=1 https://github.com clang
+          mkdir -p clang
+          wget -q https://github.com -O clang.tar.gz
+          tar -xzf clang.tar.gz -C clang
 
       - name: 4. 自动运行 curl 引入 KernelSU Next 驱动
         run: |
@@ -48,7 +50,7 @@ jobs:
           zip -r9 ../KernelSU-Next-OP7Pro.zip * -x .git README.md *placeholder
 
       - name: 8. 上传编译好的刷机包供下载
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: KernelSU-Next-OP7Pro
           path: KernelSU-Next-OP7Pro.zip
