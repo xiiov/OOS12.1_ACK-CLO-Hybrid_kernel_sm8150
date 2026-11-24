@@ -40,6 +40,7 @@ jobs:
 
       - name: 5. 使用 Clang-12 正式编译内核
         run: |
+          export PATH="/usr/lib/llvm-12/bin:$PATH"
           make -j$(nproc) O=out ARCH=arm64 vendor/sm8150-perf_defconfig
           make -j$(nproc) O=out ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1 KCFLAGS="-Wno-error" CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
