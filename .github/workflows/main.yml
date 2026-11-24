@@ -18,17 +18,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y bc bison build-essential ccache curl flex git gnupg gperf liblz4-tool libncurses5-dev libssl-dev libxml2 libxml2-utils lzop rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 clang lld llvm
 
-      - name: 3. 引入 KernelSU Next 驱动
+      - name: 3. 引入 KernelSU Next 驱动 (4.14 兼容版)
         run: |
           set -e
           HOST="github.com"
           REPO="KernelSU-Next/KernelSU-Next.git"
-          git clone --depth=1 "https://${HOST}/${REPO}"
+          git clone --depth=1 -b v1.0.5 "https://${HOST}/${REPO}"
           bash KernelSU-Next/kernel/setup.sh
-          sed -i '1i typedef long (*syscall_fn_t)(const struct pt_regs *);' drivers/kernelsu/hook/syscall_hook.h
-          echo '#include <asm/pgtable.h>' > include/linux/pgtable.h
-          sed -i 's/strncpy_from_user_nofault/strncpy_from_user/g' drivers/kernelsu/feature/sucompat.c
-          sed -i 's/-Werror//g' drivers/kernelsu/Makefile drivers/kernelsu/Kbuild 2>/dev/null || true
           ls -la drivers/kernelsu
 
       - name: 4. 自动向配置文件写入 KernelSU Next 开关
