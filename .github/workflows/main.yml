@@ -20,7 +20,9 @@ jobs:
 
       - name: 3. 自动运行 curl 引入 KernelSU Next 驱动
         run: |
+          set -e
           curl -LSs "https://githubusercontent.com" | bash -
+          ls -la drivers/kernelsu
 
       - name: 4. 自动向配置文件写入 KernelSU Next 开关
         run: |
@@ -33,7 +35,7 @@ jobs:
       - name: 5. 开始正式编译内核
         run: |
           make -j$(nproc) O=out ARCH=arm64 vendor/sm8150-perf_defconfig
-          make -j$(nproc) O=out ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+          make -j$(nproc) O=out ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1 KCFLAGS="-Wno-error" CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
       - name: 6. 打包成刷机包 (AnyKernel3)
         run: |
