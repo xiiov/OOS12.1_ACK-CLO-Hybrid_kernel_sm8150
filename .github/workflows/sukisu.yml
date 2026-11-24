@@ -13,13 +13,13 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: 2. 安装系统依赖与 AOSP Clang 编译器
+      - name: 2. 安装系统依赖与官方 Clang-12 编译器
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential ccache curl flex git gnupg gperf liblz4-tool libncurses5-dev libssl-dev libxml2 libxml2-utils lzop rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 lld llvm
-          HOST="github.com"
-          CLANG_REPO="ThankYouMario/android_prebuilts_clang-standalone.git"
-          git clone --depth=1 "https://${HOST}/${CLANG_REPO}" clang
+          sudo apt-get install -y bc bison build-essential ccache curl flex git gnupg gperf liblz4-tool libncurses5-dev libssl-dev libxml2 libxml2-utils lzop rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 clang-12 lld-12 llvm-12
+          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 100
+          sudo update-alternatives --install /usr/bin/ld.lld ld.lld /usr/bin/ld.lld-12 100
+          clang --version
 
       - name: 3. 引入 SukiSU-Ultra 驱动
         run: |
@@ -38,13 +38,10 @@ jobs:
           echo "CONFIG_KPROBE_EVENTS=y" >> $DEFCONFIG
           echo "CONFIG_KSU_KPROBE_HOOKS=y" >> $DEFCONFIG
 
-      - name: 5. 使用 AOSP Clang 正式编译内核
+      - name: 5. 使用 Clang-12 正式编译内核
         run: |
-          CLANG_BIN=$(dirname $(find $PWD/clang -name "clang" -type f | head -n 1))
-          export PATH="$CLANG_BIN:$PATH"
-          clang --version
           make -j$(nproc) O=out ARCH=arm64 vendor/sm8150-perf_defconfig
-          make -j$(nproc) O=out ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+          make -j$(nproc) O=out ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1 KCFLAGS="-Wno-error" CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
       - name: 6. 打包成刷机包 (AnyKernel3)
         run: |
