@@ -21,7 +21,9 @@ jobs:
       - name: 3. 引入 KernelSU Next 驱动
         run: |
           set -e
-          git clone --depth=1 -b next https://github.com
+          HOST="github.com"
+          REPO="KernelSU-Next/KernelSU-Next.git"
+          git clone --depth=1 -b next "https://${HOST}/${REPO}"
           bash KernelSU-Next/kernel/setup.sh
           ls -la drivers/kernelsu
 
@@ -40,7 +42,9 @@ jobs:
 
       - name: 6. 打包成刷机包 (AnyKernel3)
         run: |
-          git clone --depth=1 https://github.com
+          HOST="github.com"
+          AK3="osm0sis/AnyKernel3.git"
+          git clone --depth=1 "https://${HOST}/${AK3}"
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
           cd AnyKernel3
           zip -r9 ../KernelSU-Next-OP7Pro.zip * -x .git README.md *placeholder
