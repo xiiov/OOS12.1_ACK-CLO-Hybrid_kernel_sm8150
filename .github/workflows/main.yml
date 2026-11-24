@@ -23,7 +23,7 @@ jobs:
           set -e
           HOST="github.com"
           REPO="KernelSU-Next/KernelSU-Next.git"
-          git clone --depth=1 -b next "https://${HOST}/${REPO}"
+          git clone --depth=1 "https://${HOST}/${REPO}"
           bash KernelSU-Next/kernel/setup.sh
           ls -la drivers/kernelsu
 
