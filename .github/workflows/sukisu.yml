@@ -19,7 +19,7 @@ jobs:
           sudo apt-get install -y bc bison build-essential ccache curl flex git gnupg gperf liblz4-tool libncurses5-dev libssl-dev libxml2 libxml2-utils lzop rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3
           HOST="github.com"
           CLANG_REPO="ThankYouMario/android_prebuilts_clang-standalone.git"
-          git clone --depth=1 -b 12 "https://${HOST}/${CLANG_REPO}" clang
+          git clone --depth=1 -b 12.0 "https://${HOST}/${CLANG_REPO}" clang
 
       - name: 3. 引入 SukiSU-Ultra 驱动
         run: |
@@ -38,7 +38,7 @@ jobs:
           echo "CONFIG_KPROBE_EVENTS=y" >> $DEFCONFIG
           echo "CONFIG_KSU_KPROBE_HOOKS=y" >> $DEFCONFIG
 
-      - name: 5. 使用谷歌原配 Clang 12 正式编译内核
+      - name: 5. 使用 AOSP Clang 12 正式编译内核
         run: |
           export PATH="$PWD/clang/bin:$PATH"
           make -j$(nproc) O=out ARCH=arm64 vendor/sm8150-perf_defconfig
