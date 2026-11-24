@@ -26,6 +26,7 @@ jobs:
           git clone --depth=1 "https://${HOST}/${REPO}"
           bash KernelSU-Next/kernel/setup.sh
           sed -i '1i typedef long (*syscall_fn_t)(const struct pt_regs *);' drivers/kernelsu/hook/syscall_hook.h
+          echo '#include <asm/pgtable.h>' > include/linux/pgtable.h
           ls -la drivers/kernelsu
 
       - name: 4. 自动向配置文件写入 KernelSU Next 开关
