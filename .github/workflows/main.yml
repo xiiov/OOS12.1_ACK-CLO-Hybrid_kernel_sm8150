@@ -18,10 +18,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y bc bison build-essential ccache curl flex git gnupg gperf liblz4-tool libncurses5-dev libssl-dev libxml2 libxml2-utils lzop rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 clang lld llvm
 
-      - name: 3. 自动运行 curl 引入 KernelSU Next 驱动
+      - name: 3. 引入 KernelSU Next 驱动
         run: |
           set -e
-          curl -LSs "https://githubusercontent.com" | bash -
+          git clone --depth=1 -b next https://github.com
+          bash KernelSU-Next/kernel/setup.sh
           ls -la drivers/kernelsu
 
       - name: 4. 自动向配置文件写入 KernelSU Next 开关
