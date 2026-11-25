@@ -29,8 +29,9 @@ jobs:
           bash KernelSU-Next/kernel/setup.sh
           ls -la drivers/kernelsu
 
-      - name: 4. 自动向配置文件写入 KernelSU 开关
+      - name: 4. 修复高通相机头文件声明并写入 KSU 配置
         run: |
+          sed -i '1i struct cam_dump_req_cmd;' drivers/media/platform/msm/camera/cam_core/cam_context.h
           DEFCONFIG="arch/arm64/configs/vendor/sm8150-perf_defconfig"
           echo "CONFIG_KSU=y" >> $DEFCONFIG
           echo "CONFIG_KPROBES=y" >> $DEFCONFIG
