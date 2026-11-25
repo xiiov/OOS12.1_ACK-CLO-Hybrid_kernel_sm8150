@@ -19,19 +19,19 @@ jobs:
           sudo apt-get install -y bc bison build-essential ccache curl flex git gnupg gperf liblz4-tool libncurses5-dev libssl-dev libxml2 libxml2-utils lzop rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 clang-12 lld-12 llvm-12
           sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 100
           sudo update-alternatives --install /usr/bin/ld.lld ld.lld /usr/bin/ld.lld-12 100
-          clang --version
 
-      - name: 3. 引入 SukiSU-Ultra 驱动 (4.14 Non-GKI 专用分支)
+      - name: 3. 引入 SukiSU-Ultra 驱动 (4.14 老内核兼容版)
         run: |
           set -e
           HOST="github.com"
           REPO="SukiSU-Ultra/SukiSU-Ultra.git"
-          git clone --depth=1 -b nongki "https://${HOST}/${REPO}" SukiSU
+          git clone --depth=1 -b v1.2.1 "https://${HOST}/${REPO}" SukiSU
           bash SukiSU/kernel/setup.sh
           ls -la drivers/kernelsu
 
-      - name: 4. 自动向配置文件写入 KernelSU 开关
+      - name: 4. 修复高通相机头文件声明并写入 KSU 配置
         run: |
+          sed -i '1i struct cam_dump_req_cmd;' drivers/media/platform/msm/camera/cam_core/cam_context.h
           DEFCONFIG="arch/arm64/configs/vendor/sm8150-perf_defconfig"
           echo "CONFIG_KSU=y" >> $DEFCONFIG
           echo "CONFIG_KPROBES=y" >> $DEFCONFIG
