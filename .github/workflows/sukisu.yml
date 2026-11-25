@@ -20,13 +20,13 @@ jobs:
           sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 100
           sudo update-alternatives --install /usr/bin/ld.lld ld.lld /usr/bin/ld.lld-12 100
 
-      - name: 3. 引入 SukiSU-Ultra 驱动 (4.14 老内核兼容版)
+      - name: 3. 引入原版 KernelSU 驱动 (v0.9.5 4.14 养老终极版)
         run: |
           set -e
           HOST="github.com"
-          REPO="SukiSU-Ultra/SukiSU-Ultra.git"
-          git clone --depth=1 -b v1.2.1 "https://${HOST}/${REPO}" SukiSU
-          bash SukiSU/kernel/setup.sh
+          REPO="tiann/KernelSU.git"
+          git clone --depth=1 -b v0.9.5 "https://${HOST}/${REPO}" KernelSU
+          bash KernelSU/kernel/setup.sh v0.9.5
           ls -la drivers/kernelsu
 
       - name: 4. 修复高通相机头文件声明并写入 KSU 配置
