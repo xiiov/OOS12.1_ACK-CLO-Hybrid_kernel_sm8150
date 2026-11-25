@@ -21,12 +21,12 @@ jobs:
           sudo update-alternatives --install /usr/bin/ld.lld ld.lld /usr/bin/ld.lld-12 100
           clang --version
 
-      - name: 3. 引入 SukiSU-Ultra 驱动
+      - name: 3. 引入 SukiSU-Ultra 驱动 (4.14 Non-GKI 专用分支)
         run: |
           set -e
           HOST="github.com"
           REPO="SukiSU-Ultra/SukiSU-Ultra.git"
-          git clone --depth=1 "https://${HOST}/${REPO}" SukiSU
+          git clone --depth=1 -b nongki "https://${HOST}/${REPO}" SukiSU
           bash SukiSU/kernel/setup.sh
           ls -la drivers/kernelsu
 
